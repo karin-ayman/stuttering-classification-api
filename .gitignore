@@ -1,0 +1,5 @@
+﻿stuttering.wav
+stuttering_results.json
+__pycache__/
+*.pyc
+test_space.py
