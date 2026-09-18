@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from gradio_client import Client, handle_file
 from bs4 import BeautifulSoup
 import tempfile
@@ -68,7 +68,11 @@ def parse_result(html_result):
 
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(
+    file: UploadFile = File(...),
+    chunk_duration: int = Form(4),
+    overlap_pct: int = Form(50)
+):
 
     # Save uploaded audio temporarily
     suffix = os.path.splitext(file.filename)[1]
@@ -86,8 +90,8 @@ async def predict(file: UploadFile = File(...)):
         # Send audio to Hugging Face Space
         result = client.predict(
             audio_input=handle_file(audio_path),
-            chunk_duration=4,
-            overlap_pct=50,
+            chunk_duration=chunk_duration,
+            overlap_pct=overlap_pct,
             api_name="/process_audio"
         )
 
